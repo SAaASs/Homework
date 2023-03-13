@@ -24,6 +24,22 @@ list2 = []
 class warehouses:
     def __init__(self,mass):
         self.productslist = mass
+    Counters = {
+        "createProduct": 0,
+        "createRandomProduct": 0,
+        "youShouldPrintYourselfNOW": 0,
+        "printbyid": 0,
+        "printbyname": 0,
+        "sortbyprice": 0,
+        "sortbyname": 0,
+        "sortbyshops": 0,
+        "countActs": 0
+    }
+    def initiateMethod(self,methodName):
+        eval("self."+methodName)()
+        self.Counters[methodName] += 1
+    def countActs(self,methodName):
+        print("Метод " + methodName + " был использован " + str(self.Counters[methodName]) + " раз(a)")
     def createProduct(self):
         name = input("Введите название товара")
         if name in based["ProductNames"]:
@@ -85,17 +101,23 @@ class uselesshouse(warehouses):
         for i in range (0, len(self.productslist)):
             if self.productslist[i].name == inpu and self.productslist[i].price == min(listik):
                 print(i,self.productslist[i].shops, self.productslist[i].price)
-warehouse = warehouses(list)
-warehouse2 = warehouses(list2)
-warehouse2.createRandomProduct()
-warehouse2.createRandomProduct()
-warehouse2.createRandomProduct()
-warehouse2.youShouldPrintYourselfNOW()
-print("---------------------------------")
-ttte = uselesshouse(list2)
-ttte.createRandomProduct()
-ttte.createRandomProduct()
-ttte.createRandomProduct()
-ttte.createRandomProduct()
-ttte.youShouldPrintYourselfNOW()
-ttte.findcheap(ttte.productslist[2].name)
+warehouse = warehouses(list2)
+warehouse.initiateMethod("createRandomProduct")
+warehouse.initiateMethod("createRandomProduct")
+warehouse.initiateMethod("createRandomProduct")
+warehouse.initiateMethod("createRandomProduct")
+warehouse.initiateMethod("youShouldPrintYourselfNOW")
+warehouse.countActs("createRandomProduct")
+#warehouse2 = warehouses(list2)
+#warehouse2.createRandomProduct()
+#warehouse2.createRandomProduct()
+#warehouse2.createRandomProduct()
+#warehouse2.youShouldPrintYourselfNOW()
+#print("---------------------------------")
+#ttte = uselesshouse(list2)
+#ttte.createRandomProduct()
+#ttte.createRandomProduct()
+#ttte.createRandomProduct()
+#ttte.createRandomProduct()
+#ttte.youShouldPrintYourselfNOW()
+#ttte.findcheap(ttte.productslist[2].name)
