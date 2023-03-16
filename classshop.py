@@ -1,6 +1,6 @@
 import random
 based = {
-    "ProductNames": ["apricot"],
+    "ProductNames": ["apricot","apple"],
     "ShopNames": ["Perecrestok","Magnit","Auchan","Lenta","Dicksea","Spar"]
 }
 class products:
@@ -22,7 +22,8 @@ product5 = products("sugar","Auchan.Lenta.Dicksea.Spar",2038,5)
 list = [product1,product2,product3,product4,product5]
 list2 = []
 class warehouses:
-    def __init__(self,mass):
+    def __init__(self,mass,daname):
+        self.name = daname
         self.productslist = mass
     Counters = {
         "createProduct": 0,
@@ -33,13 +34,18 @@ class warehouses:
         "sortbyprice": 0,
         "sortbyname": 0,
         "sortbyshops": 0,
-        "countActs": 0
+        "countActs": 0,
+        "copyyourself": 0
     }
     def initiateMethod(self,methodName):
         eval("self."+methodName)()
         self.Counters[methodName] += 1
     def countActs(self,methodName):
         print("Метод " + methodName + " был использован " + str(self.Counters[methodName]) + " раз(a)")
+    def copyyourself(self):
+        newcopy = warehouses(self.productslist,"jj")
+        newcopy.name = "CopyOf" + self.name
+        newcopy.initiateMethod("youShouldPrintYourselfNOW")
     def createProduct(self):
         name = input("Введите название товара")
         if name in based["ProductNames"]:
@@ -58,13 +64,16 @@ class warehouses:
         theProduct = products(name, location, Price, theId)
         self.productslist.append(theProduct)
     def youShouldPrintYourselfNOW(self):
+        print(self.name)
         for i in range(0,len(self.productslist)):
             print(i,self.productslist[i].name, self.productslist[i].shops,self.productslist[i].price,self.productslist[i].id)
-    def printbyid(self,ids):
+    def printbyid(self):
+        ids = input("ВВедите ID")
         for i in range (0,len(self.productslist)):
             if self.productslist[i].id == int(ids):
                 print(self.productslist[i].name, self.productslist[i].shops,self.productslist[i].price)
-    def printbyname(self,names):
+    def printbyname(self):
+        names = input("ВВедите имена")
         for i in range (0,len(self.productslist)):
             if self.productslist[i].name == names:
                 print(self.productslist[i].name, self.productslist[i].shops,self.productslist[i].price)
@@ -101,13 +110,15 @@ class uselesshouse(warehouses):
         for i in range (0, len(self.productslist)):
             if self.productslist[i].name == inpu and self.productslist[i].price == min(listik):
                 print(i,self.productslist[i].shops, self.productslist[i].price)
-warehouse = warehouses(list2)
+warehouse = warehouses(list2,"sklad")
 warehouse.initiateMethod("createRandomProduct")
 warehouse.initiateMethod("createRandomProduct")
 warehouse.initiateMethod("createRandomProduct")
 warehouse.initiateMethod("createRandomProduct")
 warehouse.initiateMethod("youShouldPrintYourselfNOW")
+warehouse.initiateMethod("copyyourself")
 warehouse.countActs("createRandomProduct")
+
 #warehouse2 = warehouses(list2)
 #warehouse2.createRandomProduct()
 #warehouse2.createRandomProduct()
