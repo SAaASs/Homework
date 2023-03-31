@@ -15,9 +15,12 @@ def f():
   for i in range(0,len(data)):
     data1 = data[i].split()
     if datetime(nov.year,nov.month,nov.day).day == datetime(int(data1[4]),int(data1[3]),int(data1[2])).day and datetime(nov.year,nov.month,nov.day).month == datetime(int(data1[4]),int(data1[3]),int(data1[2])).month:
+        name = data1[0]
+        fam = data1[1]
+        tele_id = data1[5]
         @dp.message_handler(commands=["ok"])
         async def send_congratulation(msg: types.Message):
-            await bot.send_message(test_chat, 'Поздравляем {0} {1} с днем рождения'.format(data1[0], data1[1]))
+            await bot.send_message(tele_id, 'Поздравляем {0} {1} с днем рождения'.format(name, fam))
 
 f()
 
