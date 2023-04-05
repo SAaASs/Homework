@@ -1,7 +1,7 @@
 import numpy as np
 import requests
 from  bs4 import BeautifulSoup as bs
-url = "https://world-weather.ru/pogoda/china/beijing/"
+url = "https://world-weather.ru/pogoda/russia/saint_petersburg/"
 months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
 temperature_list = []
 headers_ = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
