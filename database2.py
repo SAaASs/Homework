@@ -8,7 +8,7 @@ def rand_date(switch):
         return datetime.datetime.now().replace(month = 1, day = 1) + datetime.timedelta(days=random.randint(1,730))
     else:
         return datetime.datetime.now().replace(month = 1, day = 1) - datetime.timedelta(days=random.randint(1,730))
-
+print(rand_date(1))
 class Employee:
     def __init__(self, name, age, specialization, list_of_jobs, id):
         self.name = name
@@ -18,25 +18,23 @@ class Employee:
         self.id = id
     @staticmethod
     def create_random():
-        new_worker = Employee(names[random.randint(len(names))], random.randint(18,65), specializations[random.randint(len(specializations))], [], random.randint(0,11111111111))
+        new_worker = Employee(names[random.randint(0, len(names))-1], random.randint(18, 65), specializations[random.randint(0, len(specializations))-1], [], random.randint(0,11111))
         return new_worker
-
-
-class Registry:
-    def __init__(self, reg_name):
-        self.name = reg_name
-
-    def main(self):
-        connection = psycopg2.connect(
+connection1 = psycopg2.connect(
             database="SHAD112_V9",
             user="shad112_V9",
             password="123",
             host="91.190.239.132",
             port="5432"
         )
-        print("Database opened successfully")
 
-        cur = connection.cursor()
+class Registry:
+    def __init__(self, connection, reg_name):
+        self.name = reg_name
+        self.connection = connection
+        print("Database opened successfully")
+    def main(self):
+        cur = self.connection.cursor()
         cur.execute('''
         DROP TABLE IF EXISTS companies
         ''')
@@ -53,7 +51,7 @@ class Registry:
         ('aeroflot', 'planes, clouds'),
         ('yandex go', 'cars, roads')
         ''')
-        print(cur.execute("select * from companies"))
+
         cur.execute('''
         DROP TABLE IF EXISTS work_sessions
         ''')
@@ -67,38 +65,70 @@ class Registry:
         end_date DATE
         );
         ''')
-        connection.close()
+    def close_con(self):
+        self.connection.close()
     def comp_mass(self):
-        connection = psycopg2.connect(
-            database="SHAD112_V9",
-            user="shad112_V9",
-            password="123",
-            host="91.190.239.132",
-            port="5432"
-        )
-        cur = connection.cursor()
-        print(cur.execute("select * from companies"))
-        connection.close()
-    def add_employee(self, current_employee):
-        connection = psycopg2.connect(
-            database="SHAD112_V9",
-            user="shad112_V9",
-            password="123",
-            host="91.190.239.132",
-            port="5432"
-        )
-        cur = connection.cursor()
-
-
-
+        cur = self.connection.cursor()
+        cur.execute("select * from companies")
+        return cur.fetchall()
+    def select_comp_emps2(self):
+        current_table = self.work_sessions()
+        mass1= []
+        mass2 = []
+        mass3 = []
+        for i in range(0, len(current_table)):
+            if (current_table[i][1] == 1) and datetime.datetime.now().date() < current_table[i][5]:
+                mass1.append(employees[current_table[i][1]].name)
+            if (current_table[i][1] == 2) and datetime.datetime.now().date() < current_table[i][5]:
+                mass2.append(employees[current_table[i][1]].name)
+            if (current_table[i][1] == 3) and datetime.datetime.now().date() < current_table[i][5]:
+                mass3.append(employees[current_table[i][1]].name)
+        print(mass1)
+        print(mass2)
+        print(mass3)
+    def select_comp_emps(self, comp_num):
+        for row in self.work_sessions():
+            if int(row[1]) == comp_num:
+                print(row)
+    def work_sessions(self):
+        cur = self.connection.cursor()
+        cur.execute("select * from work_sessions")
+        return cur.fetchall()
+    def add_employment(self, current_employee):
+        cur = self.connection.cursor()
         cur.execute('''
         INSERT INTO work_sessions (employee_id, company_id, start_date, speciality, salary, end_date) VALUES
         ('{}', '{}', '{}', '{}', '{}', '{}')
-        '''.format(current_employee.id, "", rand_date(-1), current_employee.specialization, random.randint(16242, 999999), rand_date(1)))
+        '''.format(current_employee.id, self.comp_mass()[random.randint(0,2)][0], rand_date(-1), current_employee.specialization, random.randint(16242, 999999), rand_date(1)))
+employees= []
+for i in range(0,7):
+    employees.append(Employee.create_random())
 
 
 
 
-        connection.close()
-Register = Registry("First")
+Register = Registry(connection1 ,"First")
+
 Register.main()
+print(Register.comp_mass())
+print("------------------------")
+Register.add_employment(employees[0])
+Register.add_employment(employees[1])
+Register.add_employment(employees[2])
+Register.add_employment(employees[3])
+Register.add_employment(employees[4])
+Register.add_employment(employees[5])
+Register.add_employment(employees[6])
+for row in Register.work_sessions():
+    print(row)
+print("---------------")
+Register.select_comp_emps(1)
+print("---------------")
+Register.select_comp_emps(2)
+print("---------------")
+Register.select_comp_emps(3)
+
+
+Register.select_comp_emps2()
+
+Register.close_con()
