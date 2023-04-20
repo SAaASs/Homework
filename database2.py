@@ -1,92 +1,104 @@
-import sqlite3
-from sqlite3 import Error
+import psycopg2
 import random
+import datetime
+names = ["name1","name2","name3","name4","name5","name6","name7","name8","name9","name10","name11","name12","name13","name14","name15","name16"]
+specializations = ["spec1","spec2","spec3","spec4","spec5","spec6","spec7","spec8","spec9","spec10","spec11","spec12","spec13","spec14","spec15","spec16"]
+def rand_date(switch):
+    if switch > 0:
+        return datetime.datetime.now().replace(month = 1, day = 1) + datetime.timedelta(days=random.randint(1,730))
+    else:
+        return datetime.datetime.now().replace(month = 1, day = 1) - datetime.timedelta(days=random.randint(1,730))
 
-def create_connection(path):
-    connection = None
-    try:
-        connection = sqlite3.connect(path)
-        print("Connection to SQLite DB successfull")
-    except Error as e:
-        print(f"The error '{e}' occured")
-    return connection
+class Employee:
+    def __init__(self, name, age, specialization, list_of_jobs, id):
+        self.name = name
+        self.age = age
+        self.specialization = specialization
+        self.list_of_jobs = list_of_jobs
+        self.id = id
+    @staticmethod
+    def create_random():
+        new_worker = Employee(names[random.randint(len(names))], random.randint(18,65), specializations[random.randint(len(specializations))], [], random.randint(0,11111111111))
+        return new_worker
 
 
-def execute_query(connection, query):
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query)
-        connection.commit()
-        print("Query executed successfully")
-    except Error as e:
-        print(f"The error '{e}' occurred")
+class Registry:
+    def __init__(self, reg_name):
+        self.name = reg_name
 
+    def main(self):
+        connection = psycopg2.connect(
+            database="SHAD112_V9",
+            user="shad112_V9",
+            password="123",
+            host="91.190.239.132",
+            port="5432"
+        )
+        print("Database opened successfully")
 
-def execute_read_query(connection, query):
-    cursor = connection.cursor()
-    result = None
-    try:
-        cursor.execute(query)
-        result = cursor.fetchall()
-        return result
-    except Error as e:
-        print(f"The error '{e}' occurred")
-
-genders = ["male", "female"]
-names = ["James","Robert","John","Michael","David","Mary","Patricia","Jennifer","Linda","Elizabeth","Richard","Joseph","Charles","Sarah","Karen","Nancy",]
-def main():
-    connection = create_connection("C:\\Programs\MIIT2022\sm_app1.sqlite")
-
-    create_student_table = """
-    CREATE TABLE IF NOT EXISTS students (
-      student_id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      department TEXT,
-      mark1 INTEGER,
-      mark2 INTEGER,
-      mark3 INTEGER
-    );
-    """
-
-    create_marks_table = """
-        CREATE TABLE IF NOT EXISTS students_marks (
-          student_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          mark1 INTEGER NOT NULL,
-          mark2 INTEGER NOT NULL,
-          mark3 INTEGER NOT NULL
-          avgs INTEGER
+        cur = connection.cursor()
+        cur.execute('''
+        DROP TABLE IF EXISTS companies
+        ''')
+        cur.execute('''
+        CREATE TABLE companies (
+          company_id INT NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          company_name VARCHAR(100) NOT NULL,
+          company_desc VARCHAR(10000)
+       );
+        ''')
+        cur.execute('''
+        INSERT INTO companies (company_name, company_desc) VALUES
+        ('rzhd', 'trains, railroads'),
+        ('aeroflot', 'planes, clouds'),
+        ('yandex go', 'cars, roads')
+        ''')
+        print(cur.execute("select * from companies"))
+        cur.execute('''
+        DROP TABLE IF EXISTS work_sessions
+        ''')
+        cur.execute('''
+        CREATE TABLE work_sessions (
+        employee_id INTEGER,
+        company_id INTEGER REFERENCES companies (company_id),
+        start_date DATE,
+        speciality VARCHAR(1000),
+        salary REAL,
+        end_date DATE
         );
-        """
-
-    delete_students = """
-    DELETE FROM students
-    """
-    delete_marks = """
-        DELETE FROM marks
-        """
-    delete_bad = """
-    DELETE FROM students
-    WHERE (mark1 + mark2 + mark3)/3 < 3.5
-    """
-    execute_query(connection,delete_students)
-    "execute_query(connection, create_student_table)"
-    for i in range(0, 14):
-        create_student = """
-        INSERT INTO
-        students (name, department, mark1, mark2, mark3)
-        VALUES
-        ('{}', '{}', {}, {}, {})
-        """.format(names[random.randint(1,len(names)-1)], "vish", random.randint(1,5),random.randint(1,5),random.randint(1,5))
-        print(create_student)
-        execute_query(connection, create_student)
-
-        for line in execute_read_query(connection, "select * from students"):
-            print(line)
-    execute_query(connection,delete_bad)
-    for line in execute_read_query(connection, "select * from students"):
-        print(line)
+        ''')
+        connection.close()
+    def comp_mass(self):
+        connection = psycopg2.connect(
+            database="SHAD112_V9",
+            user="shad112_V9",
+            password="123",
+            host="91.190.239.132",
+            port="5432"
+        )
+        cur = connection.cursor()
+        print(cur.execute("select * from companies"))
+        connection.close()
+    def add_employee(self, current_employee):
+        connection = psycopg2.connect(
+            database="SHAD112_V9",
+            user="shad112_V9",
+            password="123",
+            host="91.190.239.132",
+            port="5432"
+        )
+        cur = connection.cursor()
 
 
 
-if __name__ == "__main1__":
-    main()
+        cur.execute('''
+        INSERT INTO work_sessions (employee_id, company_id, start_date, speciality, salary, end_date) VALUES
+        ('{}', '{}', '{}', '{}', '{}', '{}')
+        '''.format(current_employee.id, "", rand_date(-1), current_employee.specialization, random.randint(16242, 999999), rand_date(1)))
+
+
+
+
+        connection.close()
+Register = Registry("First")
+Register.main()
