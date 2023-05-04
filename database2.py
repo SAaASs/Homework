@@ -78,11 +78,12 @@ class Registry:
         mass3 = []
         for i in range(0, len(current_table)):
             if (current_table[i][1] == 1) and datetime.datetime.now().date() < current_table[i][5]:
-                mass1.append(employees[current_table[i][1]].name)
+                mass1.append(current_table[i][0])
             if (current_table[i][1] == 2) and datetime.datetime.now().date() < current_table[i][5]:
-                mass2.append(employees[current_table[i][1]].name)
+                mass2.append(current_table[i][0])
             if (current_table[i][1] == 3) and datetime.datetime.now().date() < current_table[i][5]:
-                mass3.append(employees[current_table[i][1]].name)
+                mass3.append(current_table[i][0])
+
         print(mass1)
         print(mass2)
         print(mass3)
@@ -103,8 +104,10 @@ class Registry:
 employees= []
 for i in range(0,7):
     employees.append(Employee.create_random())
+for i in range(0,7):
+    print(employees[i].name)
 
-
+print("--------------------------")
 
 
 Register = Registry(connection1 ,"First")
@@ -112,6 +115,20 @@ Register = Registry(connection1 ,"First")
 Register.main()
 print(Register.comp_mass())
 print("------------------------")
+Register.add_employment(employees[0])
+Register.add_employment(employees[1])
+Register.add_employment(employees[2])
+Register.add_employment(employees[3])
+Register.add_employment(employees[4])
+Register.add_employment(employees[5])
+Register.add_employment(employees[6])
+Register.add_employment(employees[0])
+Register.add_employment(employees[1])
+Register.add_employment(employees[2])
+Register.add_employment(employees[3])
+Register.add_employment(employees[4])
+Register.add_employment(employees[5])
+Register.add_employment(employees[6])
 Register.add_employment(employees[0])
 Register.add_employment(employees[1])
 Register.add_employment(employees[2])
