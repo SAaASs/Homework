@@ -54,6 +54,7 @@ def fill_database(data_to_use, table_name):
                 ('{1}', {2})
                 '''.format(table_name, data_to_use[0][i], data_to_use[1][i]))
     cur.execute("select * from {}".format(table_name))
+    connection1.commit()
     return cur.fetchall()
 print(fill_database(gmod_data, "gmod_data"))
 print(fill_database(csgo_data, "csgo_data"))
