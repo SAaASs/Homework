@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import requests
 import re
@@ -26,11 +27,25 @@ def parse_data(url):
     return mass
 
 gmod_data = parse_data(gmod_url)
-csgo_data = parse_data(csgo_url)
-dota2_data = parse_data(dota2_url)
-warframe_data = parse_data(warframe_url)
+gmod_data[0].reverse()
+gmod_data[1].reverse()
 
-connection1 = psycopg2.connect(
+
+csgo_data = parse_data(csgo_url)
+csgo_data[0].reverse()
+csgo_data[1].reverse()
+
+
+dota2_data = parse_data(dota2_url)
+dota2_data[0].reverse()
+dota2_data[1].reverse()
+
+
+warframe_data = parse_data(warframe_url)
+warframe_data[0].reverse()
+warframe_data[1].reverse()
+
+"""connection1 = psycopg2.connect(
     database="SHAD112_V9",
     user="shad112_V9",
     password="123",
@@ -59,4 +74,46 @@ def fill_database(data_to_use, table_name):
 print(fill_database(gmod_data, "gmod_data"))
 print(fill_database(csgo_data, "csgo_data"))
 print(fill_database(dota2_data, "dota2_data"))
-print(fill_database(warframe_data, "warframe_data"))
+print(fill_database(warframe_data, "warframe_data"))"""
+
+a = []
+for i in range(0+1, len(gmod_data[0])+1):
+    a.append(i)
+x = np.array(a)
+y = np.array(gmod_data[1])
+a = list(filter(lambda x: x % 2 != 0, a))
+plt.plot(x, y)
+plt.xticks(a)
+plt.title("gmod")
+plt.show()
+a = []
+for i in range(0+1, len(csgo_data[0])+1):
+    a.append(i)
+x = np.array(a)
+y = np.array(csgo_data[1])
+a = list(filter(lambda x: x % 2 != 0, a))
+plt.plot(x, y)
+plt.xticks(a)
+plt.title("csgo")
+plt.show()
+a = []
+for i in range(0+1, len(dota2_data[0])+1):
+    a.append(i)
+x = np.array(a)
+y = np.array(dota2_data[1])
+a = list(filter(lambda x: x % 2 != 0, a))
+plt.plot(x, y)
+plt.xticks(a)
+plt.title("dota2")
+plt.show()
+a = []
+for i in range(0+1, len(warframe_data[0])+1):
+    a.append(i)
+x = np.array(a)
+y = np.array(warframe_data[1])
+a = list(filter(lambda x: x % 2 != 0, a))
+plt.plot(x, y)
+plt.xticks(a)
+plt.title("warframe")
+plt.show()
+
