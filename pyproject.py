@@ -84,6 +84,8 @@ y = np.array(gmod_data[1])
 a = list(filter(lambda x: x % 2 != 0, a))
 plt.plot(x, y)
 plt.xticks(a)
+
+print("Дисперсия онлайна для Gmod " + str(np.log10(np.var(y))))
 plt.title("gmod")
 plt.show()
 a = []
@@ -94,6 +96,8 @@ y = np.array(csgo_data[1])
 a = list(filter(lambda x: x % 2 != 0, a))
 plt.plot(x, y)
 plt.xticks(a)
+
+print("Дисперсия онлайна для csgo " + str(np.log10(np.var(y))))
 plt.title("csgo")
 plt.show()
 a = []
@@ -104,6 +108,7 @@ y = np.array(dota2_data[1])
 a = list(filter(lambda x: x % 2 != 0, a))
 plt.plot(x, y)
 plt.xticks(a)
+print("Дисперсия онлайна для dota2 " + str(np.log10(np.var(y))))
 plt.title("dota2")
 plt.show()
 a = []
@@ -114,6 +119,6 @@ y = np.array(warframe_data[1])
 a = list(filter(lambda x: x % 2 != 0, a))
 plt.plot(x, y)
 plt.xticks(a)
+print("Дисперсия онлайна для warframe " + str(np.log10(np.var(y))))
 plt.title("warframe")
 plt.show()
-
