@@ -68,3 +68,43 @@ def make_job(operation_amount):
         create_query(places_mass[random.randint(0,9)]["name"],str(datetime.datetime.now().date()+datetime.timedelta(random.randint(1,200))))
 #initDB()
 #make_job(30)
+cluster = MongoClient("mongodb://91.190.239.132:27027")
+db = cluster.shad112_spynu
+coll = db.work_queries
+
+
+match = {"$match": {"date": {"$gte": "2023-07-01", "$lt": "2023-08-01"}}}
+group = {"$group": {"_id": {"comp": "$comp", "place": "$place"}, "count": {"$sum": 1}, "total_check": {"$sum": "$check"}, "total_value": {"$sum": "$value"}}}
+project = {"$project": {"_id": 0, "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_value": 1}}
+def filter1():
+    pipeline = [{"$match": {"date": {"$gte": "2023-07-01", "$lt": "2023-08-01"}}}, {"$group": {"_id": {"comp": "$comp", "place": "$place"}, "count": {"$sum": 1}, "total_check": {"$sum": "$check"}, "total_value": {"$sum": "$value"}}}, {"$project": {"_id": 0, "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_value": 1}}]
+    res = coll.aggregate(pipeline)
+    print('---------------------------------------------------------')
+    for i in res:
+        print(i)
+    print('---------------------------------------------------------')
+
+match2 = {"$match": {"date": {"$gte": "2023-07-01", "$lt": "2023-11-04"}} }
+group2 = {"$group": {"_id": {"place":"$place", "date":"$date", "comp":"$comp"}, "total_values": {"$sum": "$value"}, "total_check": {"$sum": "$check"}, "count":{"$sum":1}}}
+project2 = {"$project": {"_id": 0, "date": "$_id.date", "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_values": 1}}, {"$sort": {"place":1}}
+def filter2():
+    pipeline2 = [{"$match": {"date": {"$gte": "2023-07-01", "$lt": "2023-11-04"}} }, {"$group": {"_id": {"place":"$place", "date":"$date", "comp":"$comp"}, "total_values": {"$sum": "$value"}, "total_check": {"$sum": "$check"}, "count":{"$sum":1}}}, {"$project": {"_id": 0, "date": "$_id.date", "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_values": 1}}, {"$sort": {"place":1}}]
+    res2 = coll.aggregate(pipeline2)
+    print('---------------------------------------------------------')
+    for i in res2:
+        print(i)
+    print('---------------------------------------------------------')
+
+group3 = {"$group": {"_id": {"comp": "$comp"},"count": {"$sum":1},"sum_value":{"$sum":"$value"},"avg_value": {"$avg": "$value"}}}
+setWindowFields3 = {"$setWindowFields":{"partitionBy": "$comp", "sortBy": { "avg_value": 1 }, "output": {"rating": {"$denseRank": {}}}}}
+project3 = {"$project": {"_id": 0, "comp": "$_id.comp", "count":1, "sum_value": 1, "rating":1, "avg_value": 1}}
+def filter3():
+    pipeline3 = [{"$group": {"_id": {"comp": "$comp"},"count": {"$sum":1},"sum_value":{"$sum":"$value"},"avg_value": {"$avg": "$value"}}}, {"$setWindowFields":{"partitionBy": "$comp", "sortBy": { "avg_value": 1 }, "output": {"rating": {"$denseRank": {}}}}}, {"$project": {"_id": 0, "comp": "$_id.comp", "count":1, "sum_value": 1, "rating":1, "avg_value": 1}}]
+    res3 = coll.aggregate(pipeline3)
+    print('---------------------------------------------------------')
+    for i in res3:
+        print(i)
+    print('---------------------------------------------------------')
+filter1()
+filter2()
+filter3()
