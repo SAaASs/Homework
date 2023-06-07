@@ -76,8 +76,8 @@ coll = db.work_queries
 match = {"$match": {"date": {"$gte": "2023-07-01", "$lt": "2023-08-01"}}}
 group = {"$group": {"_id": {"comp": "$comp", "place": "$place"}, "count": {"$sum": 1}, "total_check": {"$sum": "$check"}, "total_value": {"$sum": "$value"}}}
 project = {"$project": {"_id": 0, "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_value": 1}}
-def filter1():
-    pipeline = [{"$match": {"date": {"$gte": "2023-07-01", "$lt": "2023-08-01"}}}, {"$group": {"_id": {"comp": "$comp", "place": "$place"}, "count": {"$sum": 1}, "total_check": {"$sum": "$check"}, "total_value": {"$sum": "$value"}}}, {"$project": {"_id": 0, "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_value": 1}}]
+def filter1(d1, d2):
+    pipeline = [{"$match": {"date": {"$gte": f"{d1}", "$lt": f"{d2}"}}}, {"$group": {"_id": {"comp": "$comp", "place": "$place"}, "count": {"$sum": 1}, "total_check": {"$sum": "$check"}, "total_value": {"$sum": "$value"}}}, {"$project": {"_id": 0, "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_value": 1}}]
     res = coll.aggregate(pipeline)
     print('---------------------------------------------------------')
     for i in res:
@@ -87,8 +87,8 @@ def filter1():
 match2 = {"$match": {"date": {"$gte": "2023-07-01", "$lt": "2023-11-04"}} }
 group2 = {"$group": {"_id": {"place":"$place", "date":"$date", "comp":"$comp"}, "total_values": {"$sum": "$value"}, "total_check": {"$sum": "$check"}, "count":{"$sum":1}}}
 project2 = {"$project": {"_id": 0, "date": "$_id.date", "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_values": 1}}, {"$sort": {"place":1}}
-def filter2():
-    pipeline2 = [{"$match": {"date": {"$gte": "2023-07-01", "$lt": "2023-11-04"}} }, {"$group": {"_id": {"place":"$place", "date":"$date", "comp":"$comp"}, "total_values": {"$sum": "$value"}, "total_check": {"$sum": "$check"}, "count":{"$sum":1}}}, {"$project": {"_id": 0, "date": "$_id.date", "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_values": 1}}, {"$sort": {"place":1}}]
+def filter2(d1, d2):
+    pipeline2 = [{"$match": {"date": {"$gte": f"{d1}", "$lt": f"{d2}"}} }, {"$group": {"_id": {"place":"$place", "date":"$date", "comp":"$comp"}, "total_values": {"$sum": "$value"}, "total_check": {"$sum": "$check"}, "count":{"$sum":1}}}, {"$project": {"_id": 0, "date": "$_id.date", "comp": "$_id.comp", "place": "$_id.place", "count": 1, "total_check": 1, "total_values": 1}}, {"$sort": {"place":1}}]
     res2 = coll.aggregate(pipeline2)
     print('---------------------------------------------------------')
     for i in res2:
@@ -105,6 +105,6 @@ def filter3():
     for i in res3:
         print(i)
     print('---------------------------------------------------------')
-filter1()
-filter2()
+filter1("2023-07-01", "2023-08-01")
+filter2("2023-07-01", "2023-11-04")
 filter3()
